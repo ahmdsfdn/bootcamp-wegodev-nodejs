@@ -1,0 +1,27 @@
+{
+  "name": "week1-day2",
+  "version": "1.0.0",
+  "description": "bootcamp wegodev",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmdsfdn/bootcamp-wegodev-nodejs.git"
+  },
+  "keywords": [
+    "nodejs",
+    "expressjs",
+    "mysql"
+  ],
+  "author": "ahmdsfdn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahmdsfdn/bootcamp-wegodev-nodejs/issues"
+  },
+  "homepage": "https://github.com/ahmdsfdn/bootcamp-wegodev-nodejs#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
