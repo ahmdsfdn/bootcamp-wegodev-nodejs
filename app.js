@@ -30,6 +30,9 @@ app.delete("/articles", (req, res) => {
   });
 });
 
+const router = require("./routers/router");
+app.use("/",router)
+
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
