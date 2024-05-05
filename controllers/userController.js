@@ -1,5 +1,5 @@
 const multer = require("multer");
-
+const conn = require("../config/db.js");
 //storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
