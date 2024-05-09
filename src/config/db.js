@@ -5,7 +5,7 @@ const mysql = require('mysql2');
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  database: 'sal_staging_public',
+  database: 'dbSequelizeWegodev',
   password: 'root'
 });
 
