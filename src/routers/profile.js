@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-//import controller
-const { show } = require("../controllers/userController");
+const userController = require("../controllers/userController");
 
-//get, post, put/patch, delete
-router.get("/", show); //read all
-router.get("/", show); //menampilkan 1 data
-router.post("/", show); //create
-router.put("/", show); //update
-router.delete("/", show); //delete
+router.get("/count-users", userController.countUsers);
+
+//CRUD Standard
+router.get("/", userController.index); //index
+router.get("/:id", userController.show); //detail user
+router.post("/", userController.store); //store
+router.put("/:id", userController.update); //update
+router.delete("/:id", userController.delete); //delete
 
 module.exports = router;

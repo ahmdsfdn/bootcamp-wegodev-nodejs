@@ -11,7 +11,7 @@
     "migrate": "npx sequelize-cli db:migrate --config ./src/config/config.json --migrations-path ./src/migrations",
     "make:seeder": "npx sequelize-cli seed:generate --seeders-path ./src/seeders --name %npm_config_filename%",
     "seeder": "npx sequelize-cli --config ./src/config/config.json --seeders-path ./src/seeders db:seed --seed %npm_config_filename%",
-    "seeder_all": "npx sequelize-cli --config ./src/config/config.json --seeders-path ./src/seeders db:seed:all",
+    "seeder:all": "npx sequelize-cli --config ./src/config/config.json --seeders-path ./src/seeders db:seed:all",
     "migrate:rollback": "npx sequelize-cli db:migrate:undo --config ./src/config/config.json --migrations-path ./src/migrations"
   },
   "repository": {

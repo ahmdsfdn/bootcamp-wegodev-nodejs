@@ -1,2 +1,4 @@
 "make:migration": "npx sequelize-cli model:generate --models-path ./src/models --migrations-path ./src/migrations --name $table --attributes $attributes",
+
+
 table=Users attributes=name:string npm run make:migration

@@ -9,16 +9,49 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const tempData = [];
 
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 5; i++) {
       tempData.push({
-        name: faker.person.fullName(),
+        nama: faker.person.fullName(),
         email: faker.internet.email(),
         role: "user",
         password: await bcrypt.hash(faker.internet.password(), 10),
+        profile: {
+          alamat: faker.location.streetAddress(),
+          no_hp: faker.phone.number(),
+        }
       });
     }
 
-    await Users.bulkCreate(tempData);
+    await Users.bulkCreate(tempData,{
+        include: [
+          {
+            association: 'profile',
+          },
+        ],
+      },
+    );
+
+
+    // Test One
+    // await Users.create(
+    //   {
+    //     nama: faker.person.fullName(),
+    //     email: faker.internet.email(),
+    //     role: "user",
+    //     password: await bcrypt.hash(faker.internet.password(), 10),
+    //     profile: {
+    //       alamat: faker.location.streetAddress(),
+    //       no_hp: faker.phone.number(),
+    //     }
+    //   },
+    //   {
+    //     include: [
+    //       {
+    //         association: 'profile',
+    //       },
+    //     ],
+    //   },
+    // );
   },
 
   async down(queryInterface, Sequelize) {

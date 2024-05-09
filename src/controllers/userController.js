@@ -1,6 +1,7 @@
 // const conn = require("../config/db.js");
 
-const { Users } = require("../models");
+const { Users, Profiles } = require("../models");
+const { getPaginate } = require("../helper/helper.js");
 const bcrypt = require("bcrypt");
 
 class UserController {
@@ -13,17 +14,32 @@ class UserController {
       */
       // const [results, fields] = await conn.query("SELECT * FROM usermember");
 
-      const results = await Users.findAll({
-        attributes: { exclude: ["password"] },
+      // GET ALL
+      // const results = await Users.findAll({
+      //   attributes: { exclude: ["password"] },
+      // });
+
+      const { pages, limit } = req.query;
+
+      if (!pages || pages == 0 || !limit || limit == 0) {
+        return res.status(400).json({
+          message: "Parameter is invalid,please check your parameter",
+        });
+      }
+
+      const data = await Users.findAndCountAll({
+        offset: (parseInt(pages) - 1) * parseInt(limit),
+        limit: parseInt(limit),
+        include: [{ association: "profile", attributes: ["no_hp", "alamat"] }],
       });
 
       res.json({
         message: "Data users retrieved successfully",
-        results,
+        result: getPaginate(data, pages, limit),
       });
     } catch (err) {
       res.status(500).json({
-        message: err,
+        message: err.message,
       });
     }
   }
@@ -128,6 +144,26 @@ class UserController {
       return res.status(200).json({
         message: `User deleted successfully`,
         results,
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: err,
+      });
+    }
+  }
+
+  async countUsers(req, res) {
+    try {
+      const { count, rows } = await Users.findAndCountAll({
+        attributes: { exclude: ["password"] },
+      });
+
+      res.json({
+        message: "Data users retrieved successfully",
+        result: {
+          count,
+          rows,
+        },
       });
     } catch (err) {
       res.status(500).json({

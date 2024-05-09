@@ -2,17 +2,21 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('UsersTests', {
+    await queryInterface.createTable('Profiles', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      alamat: {
         type: Sequelize.STRING
       },
-      username: {
+      no_hp: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -24,8 +28,20 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+
+    await queryInterface.addConstraint("Profiles", {
+      fields: ["userId"],
+      type: "foreign key",
+      name: "user_id_Users_Profiles_FK",
+      references: {
+        table: "Users",
+        field: "id",
+      },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('UsersTests');
+    await queryInterface.dropTable('Profiles');
   }
 };
