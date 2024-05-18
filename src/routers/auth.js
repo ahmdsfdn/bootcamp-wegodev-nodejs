@@ -8,8 +8,8 @@ const authController = require("../controllers/authController");
  * /auth/register/:
  *  post:
  *    description: Untuk User melakukan pendaftaran
- *    security:
- *      - bearerAuth: []
+ *    tags:
+ *      - Auth
  *    requestBody:
  *      content:
  *        application/json:
@@ -41,8 +41,8 @@ router.post("/register", authController.register); //register
  * /auth/login/:
  *  post:
  *    description: Untuk User melakukan login
- *    security:
- *      - bearerAuth: []
+ *    tags:
+ *      - Auth
  *    requestBody:
  *      content:
  *        application/json:
@@ -62,7 +62,28 @@ router.post("/register", authController.register); //register
  *        description: Gagal Login
  */
 router.post("/login", authController.login); //login
-
+/**
+ * @swagger
+ * /auth/refresh-token/:
+ *  post:
+ *    description: Untuk User melakukan login
+ *    tags:
+ *      - Auth
+ *    requestBody:
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *               refreshToken:
+ *                 type: string
+ *                 description: Refresh Token
+ *    responses:
+ *      200:
+ *        description: Refresh token success
+ *      500:
+ *        description: Refresh token failed
+ */
 router.post("/refresh-token", authController.refreshToken); //TUGAS - BIKIN SWAGGER UNTUK ENDPONT REFRESH TOKEN
 
 module.exports = router;

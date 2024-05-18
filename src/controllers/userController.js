@@ -57,13 +57,17 @@ class UserController {
         attributes: { exclude: ["password"] },
       });
 
+      if (!results) {
+        throw new Error("Data not found");
+      }
+
       return res.json({
         message: "Data user retrieved successfully",
         results,
       });
     } catch (err) {
       res.status(500).json({
-        message: err,
+        message: err.message,
       });
     }
   }
@@ -117,7 +121,12 @@ class UserController {
 
       return res.status(200).json({
         message: "User updated successfully",
-        results,
+        results: await Users.findOne({
+          where: {
+            id: req.params.id,
+          },
+          attributes: { exclude: ["password"] },
+        }),
       });
     } catch (err) {
       res.status(500).json({
@@ -143,7 +152,6 @@ class UserController {
 
       return res.status(200).json({
         message: `User deleted successfully`,
-        results,
       });
     } catch (err) {
       res.status(500).json({
