@@ -4,7 +4,7 @@
 const express = require("express");
 const globalMiddleware = require("./middlewares/globalMiddleware");
 const env = require("dotenv").config().parsed;
-// const swagger = require("./routers/swagger");
+const swagger = require("./routers/swagger");
 const app = express();
 const port = 3000;
 
@@ -13,6 +13,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // sanity check
 app.use(globalMiddleware());
+
+// ROUTE SWAGGER
+if (env.NODE_ENV === "development") {
+  app.use("/api-docs", swagger);
+}
 
 const router = require("./routers/router");
 app.use("/", router);
