@@ -1,98 +1,128 @@
-// const conn = require("../config/db.js");
-
-const { Users, Profiles } = require("../models");
+const { Users } = require("../models");
 const { getPaginate } = require("../helper/helper.js");
+const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
+const ValidationError = require("../exceptions/validation.exception.js");
+const { Op, where } = require("sequelize");
 
 class UserController {
   async index(req, res) {
     try {
-      /*
-        SELECT m.id, u.id as userId, c.id AS courseId, u.name, c.course FROM users u 
-        JOIN memberships m ON u.id=m.userId JOIN courses c ON c.id=m.coursesId
-        JOIN 4 TABLES DIATAS BISA DIUBAH MENJADI 1 QUERY TABLE VIEW
-      */
-      // const [results, fields] = await conn.query("SELECT * FROM usermember");
+      const errors = validationResult(req);
 
-      // GET ALL
-      // const results = await Users.findAll({
-      //   attributes: { exclude: ["password"] },
-      // });
-
-      const { pages, limit } = req.query;
-
-      if (!pages || pages == 0 || !limit || limit == 0) {
-        return res.status(400).json({
-          message: "Parameter is invalid,please check your parameter",
-        });
+      if (!errors.isEmpty()) {
+        throw new ValidationError(errors);
       }
 
-      const data = await Users.findAndCountAll({
-        offset: (parseInt(pages) - 1) * parseInt(limit),
-        limit: parseInt(limit),
-        include: [{ association: "profile", attributes: ["no_hp", "alamat"] }],
+      const { page, pageSize, fullName } = req.query;
+
+      let whereClause = {};
+      // Filter
+      if (fullName) {
+        whereClause.fullName = { [Op.like]: `%${fullName}%` };
+      }
+      // End Filter
+
+      const getData = await Users.findAndCountAll({
+        offset: (parseInt(page) - 1) * parseInt(pageSize),
+        limit: parseInt(pageSize),
+        where: whereClause,
+        include: [{ association: "Avatar" }],
       });
 
+      const { data, count, currentPage, totalPages } = await getPaginate(
+        getData,
+        page,
+        pageSize
+      );
+
       res.json({
-        message: "Data users retrieved successfully",
-        result: getPaginate(data, pages, limit),
+        code: 200,
+        message: `${count} data sudah diterima`,
+        count,
+        currentPage,
+        totalPages,
+        data,
       });
     } catch (err) {
+      if (err instanceof ValidationError) {
+        return res.status(400).json({
+          code: 400,
+          message: "Silahkan cek kembali data anda",
+          errors: err.errors.errors,
+          data: [],
+        });
+      }
       res.status(500).json({
+        code: 500,
         message: err.message,
+        data: [],
       });
     }
   }
 
   async show(req, res) {
     try {
-      // const [results, fields] = await conn.query(
-      //   `SELECT * FROM users WHERE id = ${req.params.id}`
-      // );
-
-      const results = await Users.findOne({
+      const data = await Users.findOne({
         where: {
           id: req.params.id,
         },
         attributes: { exclude: ["password"] },
+        include: [{ association: "Avatar" }],
       });
 
-      if (!results) {
+      if (!data) {
         throw new Error("Data not found");
       }
 
       return res.json({
-        message: "Data user retrieved successfully",
-        results,
+        code: 200,
+        message: "Data sudah diterima",
+        data,
       });
     } catch (err) {
       res.status(500).json({
+        code: 500,
         message: err.message,
       });
     }
   }
 
-  async store(req, res) {
+  async store(req, res, next) {
     try {
-      // const result = await conn.query(
-      //   `INSERT INTO users (name, gender, email) VALUES ('${req.body.name}', '${req.body.gender}', '${req.body.email}')`
-      // );
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        throw new ValidationError(errors);
+      }
 
       const newPassword = await bcrypt.hash(req.body.password, 10);
 
       const results = await Users.create({
-        name: req.body.name,
+        fullName: req.body.fullName,
         email: req.body.email,
         password: newPassword,
         role: req.body.role,
+        status: req.body.status,
+        avatar: req.body.avatar,
       });
 
       res.status(201).json({
+        code: 201,
         message: "User created successfully",
-        results,
+        data: results,
       });
     } catch (err) {
+      if (err instanceof ValidationError) {
+        return res.status(400).json({
+          code: 400,
+          message: "Silahkan cek kembali data anda",
+          errors: err.errors.errors,
+          data: [],
+        });
+      }
       res.status(500).json({
+        code: 500,
         message: err,
       });
     }
@@ -100,17 +130,22 @@ class UserController {
 
   async update(req, res) {
     try {
-      // const [results, fields] = await conn.query(
-      //   `UPDATE users
-      //   SET name = '${req.body.name}', gender = '${req.body.gender}', email = '${req.body.email}'
-      //   WHERE id = ${req.params.id}`
-      // );
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        throw new ValidationError(errors);
+      }
+
+      const newPassword = await bcrypt.hash(req.body.password, 10);
 
       const results = await Users.update(
         {
-          name: req.body.name,
+          fullName: req.body.fullName,
           email: req.body.email,
+          password: newPassword,
           role: req.body.role,
+          status: req.body.status,
+          avatar: req.body.avatar,
         },
         {
           where: {
@@ -120,8 +155,9 @@ class UserController {
       );
 
       return res.status(200).json({
-        message: "User updated successfully",
-        results: await Users.findOne({
+        code: 200,
+        message: "Data berhasil diperbaharui",
+        data: await Users.findOne({
           where: {
             id: req.params.id,
           },
@@ -129,7 +165,16 @@ class UserController {
         }),
       });
     } catch (err) {
+      if (err instanceof ValidationError) {
+        return res.status(400).json({
+          code: 400,
+          message: "Silahkan cek kembali data anda",
+          errors: err.errors.errors,
+          data: [],
+        });
+      }
       res.status(500).json({
+        code: 500,
         message: err,
       });
     }
@@ -137,13 +182,6 @@ class UserController {
 
   async delete(req, res) {
     try {
-      // const [results, fields] = await conn.query(
-      //   `SELECT * FROM users WHERE id =  ${req.params.id}`
-      // );
-
-      //query delete
-      // await conn.query(`DELETE FROM users WHERE id = ${req.params.id}`);
-
       const results = await Users.destroy({
         where: {
           id: req.params.id,
@@ -151,42 +189,15 @@ class UserController {
       });
 
       return res.status(200).json({
-        message: `User deleted successfully`,
+        code: 200,
+        message: `Data berhasil dihapus`,
       });
     } catch (err) {
       res.status(500).json({
-        message: err,
-      });
-    }
-  }
-
-  async countUsers(req, res) {
-    try {
-      const { count, rows } = await Users.findAndCountAll({
-        attributes: { exclude: ["password"] },
-      });
-
-      res.json({
-        message: "Data users retrieved successfully",
-        result: {
-          count,
-          rows,
-        },
-      });
-    } catch (err) {
-      res.status(500).json({
+        code: 500,
         message: err,
       });
     }
   }
 }
-
-// function show(req, res) {
-//   res.json({
-//     nama: "John",
-//     pesan: "Selamat bergabung John!",
-//   });
-// }
-
-// module.exports = { store };
 module.exports = new UserController();

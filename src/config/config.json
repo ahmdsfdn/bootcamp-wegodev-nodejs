@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "root",
-    "database": "dbSequelizeWegodev",
+    "database": "tugas-akhir-wegodev",
     "host": "localhost",
     "port": "8889",
     "dialect": "mysql"

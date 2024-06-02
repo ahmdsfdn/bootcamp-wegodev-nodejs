@@ -6,7 +6,7 @@ const env = require("dotenv").config().parsed;
 class AuthController {
   generateToken = async (payload) => {
     const accessToken = jwt.sign(payload, env.JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "1000m",
     });
 
     const refreshToken = jwt.sign(payload, env.JWT_REFRESH_TOKEN_SECRET, {
@@ -18,7 +18,6 @@ class AuthController {
 
   register = async (req, res) => {
     try {
-      console.log(req.body);
       const user = await Users.create({
         name: req.body.name,
         email: req.body.email,
@@ -36,6 +35,7 @@ class AuthController {
       });
 
       res.status(200).json({
+        code: 200,
         message: "Registered successfully",
         accessToken: accessToken,
         refreshToken: refreshToken,
@@ -43,6 +43,7 @@ class AuthController {
       });
     } catch (error) {
       res.status(500).json({
+        code: 500,
         message: error.message,
       });
     }
@@ -74,6 +75,7 @@ class AuthController {
       });
 
       res.json({
+        code: 200,
         message: "login success",
         accessToken: accessToken,
         refreshToken: refreshToken,
@@ -81,6 +83,7 @@ class AuthController {
       });
     } catch (error) {
       res.status(500).json({
+        code: 500,
         message: error.message,
       });
     }
@@ -102,12 +105,14 @@ class AuthController {
       });
 
       res.json({
+        code: 200,
         message: "Refresh token success",
         accessToken: accessToken,
         refreshToken: refreshToken,
       });
     } catch (error) {
       res.status(500).json({
+        code: 500,
         message: error.message,
       });
     }

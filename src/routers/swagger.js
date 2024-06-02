@@ -8,15 +8,15 @@ const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Bootcamp Batch 4",
-      description: "Simple API Documentation for Bootcamp Batch 4",
+      title: "Tugas Aakhir Bootcamp Batch 4 - API v1",
+      description: "API Documentation for Tugas Akhir Bootcamp Batch 4",
       contact: {
         name: "Ahmad Saifudin S",
       },
       servers: [`http://localhost:${env.PORT}`],
     },
   },
-  apis: ["./src/routers/*.js"],
+  apis: ["./src/routers/v1/*.js", "./src/routers/*.js"],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);

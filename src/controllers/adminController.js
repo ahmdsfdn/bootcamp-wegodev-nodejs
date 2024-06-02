@@ -10,8 +10,6 @@ const storage = multer.diskStorage({
   },
 });
 
-const formData = multer({ storage: storage });
-
 //data users
 const users = [
   {

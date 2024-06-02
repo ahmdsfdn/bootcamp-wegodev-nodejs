@@ -9,8 +9,8 @@
     "migration": "npx sequelize-cli model:generate --models-path ./src/models --migrations-path ./src/migrations --name '%npm_config_table%' --attributes '%npm_config_attributes%'",
     "make:migration": "npx sequelize-cli model:generate --models-path ./src/models --migrations-path ./src/migrations --name $table --attributes $attributes",
     "migrate": "npx sequelize-cli db:migrate --config ./src/config/config.json --migrations-path ./src/migrations",
-    "make:seeder": "npx sequelize-cli seed:generate --seeders-path ./src/seeders --name %npm_config_filename%",
-    "seeder": "npx sequelize-cli --config ./src/config/config.json --seeders-path ./src/seeders db:seed --seed %npm_config_filename%",
+    "make:seeder": "npx sequelize-cli seed:generate --seeders-path ./src/seeders --name $seeder",
+    "seeder": "npx sequelize-cli --config ./src/config/config.json --seeders-path ./src/seeders db:seed --seed $seeder",
     "seeder:all": "npx sequelize-cli --config ./src/config/config.json --seeders-path ./src/seeders db:seed:all",
     "migrate:rollback": "npx sequelize-cli db:migrate:undo --config ./src/config/config.json --migrations-path ./src/migrations"
   },
@@ -34,6 +34,7 @@
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-validator": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.9.7",
@@ -44,5 +45,5 @@
   "devDependencies": {
     "nodemon": "^3.1.0",
     "sequelize-cli": "^6.6.2"
-  }  
+  }
 }

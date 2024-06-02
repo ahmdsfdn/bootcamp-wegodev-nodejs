@@ -28,14 +28,6 @@ function auth(req, res, next) {
       req.user = { id: user.id, role: user.role };
 
       next();
-
-      // if (token == "123") {
-      //   req.user = { id: 1, username: "john_doe", role: "admin" };
-      // } else if (token == "456") {
-      //   req.user = { id: 2, username: "jane_doe", role: "user" };
-      // }
-
-      // next();
     } catch (error) {
       let statusCode = 500;
 
