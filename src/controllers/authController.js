@@ -6,7 +6,7 @@ const env = require("dotenv").config().parsed;
 class AuthController {
   generateToken = async (payload) => {
     const accessToken = jwt.sign(payload, env.JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: "1000m",
+      expiresIn: "15m",
     });
 
     const refreshToken = jwt.sign(payload, env.JWT_REFRESH_TOKEN_SECRET, {

@@ -2,7 +2,7 @@
 // import { show } from "./controllers/userController";
 
 const express = require("express");
-const globalMiddleware = require("./middlewares/globalMiddleware");
+// const globalMiddleware = require("./middlewares/globalMiddleware");
 const env = require("dotenv").config().parsed;
 const swagger = require("./routers/swagger");
 const app = express();
