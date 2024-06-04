@@ -41,6 +41,7 @@ class PostController {
             model: Categories,
             as: "categoriesFilter",
             where: whereCategories,
+            attributes: [],
           },
           "Thumbnail",
         ],
@@ -58,10 +59,7 @@ class PostController {
         count,
         currentPage,
         totalPages,
-        data: data.map((post) => {
-          delete post.dataValues.categoriesFilter;
-          return post;
-        }),
+        data,
       });
     } catch (err) {
       if (err instanceof ValidationError) {
